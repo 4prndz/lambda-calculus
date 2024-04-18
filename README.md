@@ -1,25 +1,15 @@
-# lambda_calculus
+# Attempt to Implement a Interpreter for Lambda Calculus 
 
-[![Package Version](https://img.shields.io/hexpm/v/lambda_calculus)](https://hex.pm/packages/lambda_calculus)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/lambda_calculus/)
+## Syntax:
+- variable: `(x)`
+- abstraction: `λx.(x)`
+- application: `(λx.(x)) (x)`
 
-```sh
-gleam add lambda_calculus
-```
-```gleam
-import lambda_calculus
+## Lambda Term Type Custom
+- `Var(String)`
+- `App(LambdaTerm, LambdaTerm)`
+- `Abs(String, LambdaTerm)`
 
-pub fn main() {
-  // TODO: An example of the project in use
-}
-```
-
-Further documentation can be found at <https://hexdocs.pm/lambda_calculus>.
-
-## Development
-
-```sh
-gleam run   # Run the project
-gleam test  # Run the tests
-gleam shell # Run an Erlang shell
-```
+## Refs: 
+- https://dev.to/chshersh/learn-lambda-calculus-in-10-minutes-with-ocaml-56ba
+- https://en.wikipedia.org/wiki/Lambda_calculus
