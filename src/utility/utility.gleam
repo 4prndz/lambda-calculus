@@ -22,13 +22,20 @@ pub fn split_once_last(
   let result =
     input
     |> string.split(substring)
-  let result = list.filter(result, fn(elem) { elem != " " && elem != "" })
+    |> list.filter(fn(elem) { elem != " " && elem != "" })
   case result {
-    [head, tail] -> [string.concat(list.append(tc, [head])), tail]
+    [head, tail] -> [
+      tc
+        |> list.append([head])
+        |> string.concat(),
+      tail,
+    ]
     [head, ..tail] -> {
-      let result = list.map(tail, fn(elem) { elem <> substring })
-      let result = string.drop_right(string.concat(result), up_to: 1)
-      split_once_last(result, " ", list.append(tc, [head, " "]))
+      tail
+      |> list.map(fn(elem) { elem <> substring })
+      |> string.concat
+      |> string.drop_right(up_to: 1)
+      |> split_once_last(" ", list.append(tc, [head, " "]))
     }
     x -> x
   }
