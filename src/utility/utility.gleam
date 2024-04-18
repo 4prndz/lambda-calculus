@@ -40,3 +40,23 @@ pub fn split_once_last(
     x -> x
   }
 }
+
+pub fn remove_both_paren(input: String) -> String {
+  input
+  |> remove_right_paren
+  |> remove_left_paren
+}
+
+pub fn remove_right_paren(input: String) -> String {
+  case string.ends_with(input, ")") {
+    True -> string.drop_right(input, up_to: 1)
+    _ -> input
+  }
+}
+
+pub fn remove_left_paren(input: String) -> String {
+  case string.starts_with(input, "(") {
+    True -> string.drop_left(input, up_to: 1)
+    _ -> input
+  }
+}

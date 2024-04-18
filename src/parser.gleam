@@ -1,55 +1,52 @@
-import gleam/io
 import gleam/string
 import types/lambda_term.{type LambdaTerm, Abs, App, Var}
-import utility/utility.{split_once_last}
+import utility/utility.{remove_both_paren, remove_right_paren, split_once_last}
 
 pub fn parser(input: String) -> LambdaTerm {
-  let x = string.split(string.trim(input), "")
-  io.debug("------------")
-  io.debug(input)
-  case x {
-    [var] | [var, ")"] | ["(", var, ")"] -> {
-      Var(var)
-      |> io.debug()
-    }
+  let result =
+    input
+    |> string.trim()
+    |> string.split("")
+  case result {
+    [var] | [var, ")"] | ["(", var, ")"] -> Var(var)
     ["λ", ..rest] -> {
       case rest {
         [id, ".", ..tail] -> {
-          let lambda_term = string.drop_left(string.concat(tail), up_to: 1)
-          let lambda_term = string.drop_right(lambda_term, up_to: 1)
-          Abs(id, parser(lambda_term))
-          |> io.debug()
+          tail
+          |> string.concat
+          |> remove_both_paren
+          |> parser
+          |> Abs(id, _)
         }
-        _ -> panic("syntax error")
+        _ -> panic as input
       }
     }
     ["(", ..rest] -> {
       case rest {
-        [var, ")", ..rest] -> {
-          App(parser(var), parser(string.concat(rest)))
-          |> io.debug
-        }
+        [var, ")", ..rest] -> App(parser(var), parser(string.concat(rest)))
         ["(", ..rest] -> {
           let assert [lterm, rterm] =
-            split_once_last(string.concat(rest), " ", [""])
+            rest
+            |> string.concat
+            |> split_once_last(" ", [""])
           App(parser("(" <> lterm), parser(rterm))
-          |> io.debug()
         }
         ["λ", ..rest] -> {
           let assert [lterm, rterm] =
-            split_once_last(string.concat(rest), " ", [""])
-          let lterm = string.drop_right(lterm, up_to: 1)
-          let rterm = string.drop_left(rterm, up_to: 1)
-          let rterm = string.drop_right(rterm, up_to: 1)
-          App(parser("λ" <> lterm), parser(rterm))
-          |> io.debug()
+            rest
+            |> string.concat
+            |> split_once_last(" ", [""])
+          let lterm =
+            lterm
+            |> remove_right_paren
+          rterm
+          |> remove_both_paren
+          |> parser
+          |> App(parser("λ" <> lterm), _)
         }
-        _ -> panic("syntax error")
+        _ -> panic as input
       }
     }
-    x -> {
-      io.debug(string.concat(x))
-      Var(string.concat(x))
-    }
+    _ -> panic as input
   }
 }
