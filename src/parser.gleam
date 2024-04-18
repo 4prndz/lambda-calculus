@@ -1,9 +1,12 @@
 import gleam/io
 import gleam/string
 import types/lambda_term.{type LambdaTerm, Abs, App, Var}
+import utility/utility.{split_once_last}
 
 pub fn parser(input: String) -> LambdaTerm {
   let x = string.split(string.trim(input), "")
+  io.debug("------------")
+  io.debug(input)
   case x {
     [var] | [var, ")"] | ["(", var, ")"] -> {
       Var(var)
@@ -24,17 +27,19 @@ pub fn parser(input: String) -> LambdaTerm {
       case rest {
         [var, ")", ..rest] -> {
           App(parser(var), parser(string.concat(rest)))
-          |> io.debug()
+          |> io.debug
         }
         ["(", ..rest] -> {
-          let assert [lterm, ..rterm] = string.split(string.concat(rest), " ")
-          App(parser(lterm), parser(string.concat(rterm)))
+          let assert [lterm, rterm] =
+            split_once_last(string.concat(rest), " ", [""])
+          App(parser("(" <> lterm), parser(rterm))
           |> io.debug()
         }
         ["λ", ..rest] -> {
-          let assert [lterm, ..rterm] = string.split(string.concat(rest), " ")
+          let assert [lterm, rterm] =
+            split_once_last(string.concat(rest), " ", [""])
           let lterm = string.drop_right(lterm, up_to: 1)
-          let rterm = string.drop_left(string.concat(rterm), up_to: 1)
+          let rterm = string.drop_left(rterm, up_to: 1)
           let rterm = string.drop_right(rterm, up_to: 1)
           App(parser("λ" <> lterm), parser(rterm))
           |> io.debug()

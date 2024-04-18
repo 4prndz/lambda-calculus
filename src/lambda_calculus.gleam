@@ -1,11 +1,9 @@
 import gleam/io
-import gleam/string
-import parser.{parser}
 import types/lambda_term.{Abs, App, Var}
-import utility/utility.{lambda_to_string, split_once_last}
+import utility/utility.{lambda_to_string}
 
 pub fn main() {
-  let input = App(App(Abs("x", Abs("y", Var("x"))), Var("z")), Var("w"))
+  let input = App(Abs("x", App(Var("x"), Var("x"))), Abs("y", Var("y")))
   input
   |> lambda_to_string()
   |> io.debug()
