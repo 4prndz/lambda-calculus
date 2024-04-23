@@ -13,3 +13,8 @@
 ## Refs: 
 - https://dev.to/chshersh/learn-lambda-calculus-in-10-minutes-with-ocaml-56ba
 - https://en.wikipedia.org/wiki/Lambda_calculus
+
+## TODO: 
+- Implements Tail Call Optimization in Parser
+- Finish the Evalution
+- Supports Body App :P
